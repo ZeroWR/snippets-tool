@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">	
+	<head>
+		<title>SQL Snippets</title>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="styles/bootstrap.min.css" />
+		<link rel="stylesheet" href="styles/fa/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="styles/codemirror.css" />
+		<link rel="stylesheet" href="styles/base16-light.css" />
+		<link rel="stylesheet" href="styles/custom.css" />
+		<script src="scripts/jquery.min.js"></script>
+		<script src="scripts/knockout-3.4.2.js"></script>
+		<script src="scripts/codemirror.js"></script>
+		<script src="scripts/ko.codemirror.js"></script>
+		<script src="scripts/modes/sql.js"></script>
+		<script src="scripts/modes/clike.js"></script>
+		<script src="scripts/modes/htmlmixed.js"></script>
+		<script src="scripts/modes/vb.js"></script>
+		<script src="scripts/modes/xml.js"></script>
+		<script src="scripts/modes/javascript.js"></script>
+		<script src="scripts/script.js"></script>
+		<script src="scripts/mustache.js"></script>
+		<script src="scripts/FileSaver.js"></script>
+		<script src="scripts/main.js"></script>
+		<script type="text/javascript">
+        $(
+			function () 
+			{
+				ko.applyBindings(new MainViewModel());
+			}
+		);
+    </script>
+	</head>
+    <body data-spy="scroll" data-target="#sidebar" data-offset="10">
+		<!-- Navbar -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="index.html">Snippet Tool</a>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="index.html" id="nolight">Home</a></li>
+					<li><a href="help.html">Help</a></li>
+					<li><a href="snippet.html">Tool</a></li>								
+				</div>
+		</nav>
+        <div id="wrapper">
+
+        </div>
+		<div class="footer">
+                <div class="foot-container">
+                    <div class="col-sm-10">
+                        <p>2017 - Johnathan Harris & Adam Minder</p> 
+                    </div>
+                    
+                    <div class="col-sm-2">
+                       
+                    </div>
+                </div>
+            </div>
+
+
+		<script src="scripts/bootstrap.min.js"></script>
+
+		<pre id="outputTemplate" style="display:none">
+			<?xml version="1.0" encoding="utf-8" ?>
+			<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+				{{#snippets}}
+				<CodeSnippet Format="1.0.0">
+					<Header>
+						<Title>{{title}}</Title>
+						<Shortcut></Shortcut>
+						<Description>{{description}}</Description>
+						<Author></Author>
+						<SnippetTypes>
+							{{#snippetTypes}}
+							<SnippetType>{{value}}</SnippetType>
+							{{/snippetTypes}}
+						</SnippetTypes>
+					</Header>
+					<Snippet>
+						<Declarations></Declarations>
+						<Code Language="{{language.attributeValue}}"><![CDATA[{{snippetCode}}]]>
+						</Code>
+					</Snippet>
+				</CodeSnippet>
+				{{/snippets}}
+			</CodeSnippets>
+		</pre>
+    </body>
+</html>

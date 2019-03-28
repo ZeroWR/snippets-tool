@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">	
+	<head>
+		<title>SQL Snippets</title>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="styles/bootstrap.min.css" />
+		<link rel="stylesheet" href="styles/fa/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="styles/codemirror.css" />
+		<link rel="stylesheet" href="styles/base16-light.css" />
+		<link rel="stylesheet" href="styles/custom.css" />
+		<script src="scripts/jquery.min.js"></script>
+		<script src="scripts/knockout-3.4.2.js"></script>
+		<script src="scripts/codemirror.js"></script>
+		<script src="scripts/ko.codemirror.js"></script>
+		<script src="scripts/modes/sql.js"></script>
+		<script src="scripts/modes/clike.js"></script>
+		<script src="scripts/modes/htmlmixed.js"></script>
+		<script src="scripts/modes/vb.js"></script>
+		<script src="scripts/modes/xml.js"></script>
+		<script src="scripts/modes/javascript.js"></script>
+		<script src="scripts/script.js"></script>
+		<script src="scripts/mustache.js"></script>
+		<script src="scripts/FileSaver.js"></script>
+		<script src="scripts/main.js"></script>
+		<script type="text/javascript">
+        $(
+			function () 
+			{
+				ko.applyBindings(new MainViewModel());
+			}
+		);
+    </script>
+	</head>
+    <body data-spy="scroll" data-target="#sidebar" data-offset="10" class="no-scroll">
+		<!-- Navbar -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="index.html">Snippet Tool</a>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="index.html" id="nolight">Home</a></li>
+					<li><a href="help.html">Help</a></li>
+					<li><a href="snippet.html">Tool</a></li>							
+				</div>
+		</nav>
+		<!-- Snippet Content -->
+		<div id="wrapper">
+			<div class="row colorize">
+				<div class="container">
+					<div class="text-center">	
+						<button id="save-snippet" type="button" data-bind="click: saveSnippets">Save Snippet(s)</button>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar -->
+			<div class="col-xs-3 col-sm-3 col-md-3 col-lg-2" id="sidebar">
+
+				<div class="row">
+					<div class='col-xs-12 col-sm-10 col-md-10'><h1 class="less-margin">Snippets</h1></div>
+					<div class='col-xs-12 col-sm-2 col-md-2'>
+						<button id="add-snippet" class='btn btn-default btn-circle' type="button" data-bind="click: addSnippet">
+							<i class='glyphicon glyphicon-plus'></i>
+						</button>
+					</div>
+				</div>
+				
+				<ol data-bind="foreach: {data:snippets}">
+					<li>
+						<div class="list-space col-xs-7 col-sm-9 col-md-10">
+							<a data-bind="attr: {'href': '#' + id}, text: linkTitle"></a>
+						</div>
+
+						<div class='form-control-plaintext col-xs-5 col-sm-3 col-md-2'>
+							<button id="remove-snippet" class='btn btn-default btn-circle mt-0' type="button" data-bind="click: function(){$root.removeSnippet($data);}">
+								<i class='glyphicon glyphicon-remove'></i>
+							</button>
+						</div>
+					</li>
+				</ol>
+			</div>
+			<!-- Snippet Forms -->
+			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-10 content">
+				<div class='row'>
+					<form>
+						<div id="snippets-container" class='container-fluid form-group row' data-bind="foreach: {data:snippets}">
+							<div data-bind="attr: {'id': id}" class="snippet container-fluid form-group row align-items-center" >
+								<!--NEW SNIPPET FORM-->
+								<div class='form-group row align-items-center'>
+									<label class='col-form-label col-md-2'>Title</label>
+									<div class='col-md-6'>
+										<input class='form-control' data-bind="textInput: title" placeholder="Title" />
+									</div>
+								</div>
+								
+								<div class='form-group row align-items-center'>
+									<label class='col-form-label col-md-2'>Description</label>
+									<div class='col-md-6'>
+										<input class='form-control' data-bind="textInput: description" placeholder="Description" />
+									</div>
+								</div>
+								
+								<div class='form-group row'>
+									<label class='col-form-label col-md-2'>Types</label>
+									<div class='col-md-3'>
+										<select class='form-control' data-bind="options: $root.snippetTypes, optionsText: 'name', selectedOptions: snippetTypes" multiple></select>
+									</div>
+								</div>
+
+								<div class='form-group row'>
+									<label class='col-form-label col-md-2'>Snippet Language</label>
+									<div class='col-md-3'>
+										<select class='form-control' data-bind="options: $root.languages, optionsText: 'text', value: language, event: { 'click': onChange($data), 'keypress': onChange($data), 'keyup': onChange($data) }" > </select>
+									</div>
+								</div>
+								
+								<div class='form-group row'>
+									<label class='col-form-label col-md-2'>Snippet Text</label>
+									<div class='col-md-10'>
+										<div class="codeeditor" data-bind="codemirror: { binding: snippetCode, codeMirrorOptions: { mode: 'text/x-mssql', theme: 'base16-light', smartIndent: true, tabSize: 4, language: 'sql', lineNumbers: true }}" ></div>
+										<!--<div class="codeeditor" data-bind="codemirror: { testProperty: 1, testPropert2: 2}" ></div>-->
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>	
+		<!-- Footer -->
+		<div class="footer">
+			<div class="container-fluid">
+				<div class="col-xs-6 col-sm-6 col-md-7">
+					<p>2017 - Johnathan Harris & Adam Minder</p> 
+				</div>
+				
+				<div class="col-xs-6 col-sm-6 col-md-5">
+					<input type="text" data-bind="textInput: fileName" placeholder="File Name" style="height:25px;margin-right:15px;width:250px;" />
+					<span class="text-center" >	
+						<button id="save-snippet" type="button" data-bind="click: saveSnippets" >Save Snippet(s)</button>
+					</span>
+				</div>
+			</div>
+		</div>
+
+
+		<script src="scripts/bootstrap.min.js"></script>
+
+		<pre id="outputTemplate" style="display:none">
+			<?xml version="1.0" encoding="utf-8" ?>
+			<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+				{{#snippets}}
+				<CodeSnippet Format="1.0.0">
+					<Header>
+						<Title>{{title}}</Title>
+						<Shortcut></Shortcut>
+						<Description>{{description}}</Description>
+						<Author></Author>
+						<SnippetTypes>
+							{{#snippetTypes}}
+							<SnippetType>{{value}}</SnippetType>
+							{{/snippetTypes}}
+						</SnippetTypes>
+					</Header>
+					<Snippet>
+						<Declarations></Declarations>
+						<Code Language="{{language.attributeValue}}"><![CDATA[{{snippetCode}}]]>
+						</Code>
+					</Snippet>
+				</CodeSnippet>
+				{{/snippets}}
+			</CodeSnippets>
+		</pre>
+    </body>
+</html>
